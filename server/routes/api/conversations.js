@@ -51,7 +51,17 @@ router.get("/", async (req, res, next) => {
       const convo = conversations[i];
       const convoJSON = convo.toJSON();
       // calculate the number of unread messages
-      const unreadCount = conversations[i].messages.filter(message => req.user.id !== message.senderId && !message.isRead).length
+      const unreadCount = await Message.count({
+        where: {
+          [Op.and]: {
+            conversationId: conversations[i].id,
+            senderId: {
+              [Op.ne]: req.user.id
+            },
+            isRead: false,
+          }
+        }
+      })
 
       // set a property "otherUser" so that frontend will have easier access
       if (convoJSON.user1) {

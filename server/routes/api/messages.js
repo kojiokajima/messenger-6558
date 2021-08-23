@@ -50,6 +50,9 @@ router.put("/read", async (req, res, next) => {
     if (!req.user) {
       return res.sendStatus(401);
     }
+    if (!req.body.id) {
+      return res.status(204).end();
+    }
     await Message.update({ isRead: true }, {
       where: {
         [Op.and]: {
@@ -60,7 +63,7 @@ router.put("/read", async (req, res, next) => {
         }
       }
     })
-    res.end();
+    res.status(204).end();
   } catch (error) {
     next(error);
   }
