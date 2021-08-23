@@ -50,6 +50,8 @@ router.get("/", async (req, res, next) => {
     for (let i = 0; i < conversations.length; i++) {
       const convo = conversations[i];
       const convoJSON = convo.toJSON();
+      // calculate the number of unread messages
+      const unreadCount = conversations[i].messages.filter(message => req.user.id !== message.senderId && !message.isRead).length
 
       // set a property "otherUser" so that frontend will have easier access
       if (convoJSON.user1) {
@@ -69,6 +71,7 @@ router.get("/", async (req, res, next) => {
 
       // set properties for notification count and latest message preview
       convoJSON.latestMessageText = convoJSON.messages[0].text;
+      convoJSON.unreadCount = unreadCount;
       conversations[i] = convoJSON;
       conversations[i].messages.reverse()
     }
