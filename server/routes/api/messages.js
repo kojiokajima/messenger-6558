@@ -51,8 +51,17 @@ router.put("/read", async (req, res, next) => {
       return res.sendStatus(401);
     }
     if (!req.body.id) {
-      return res.status(204).end();
+      return res.sendStatus(204);
     }
+    const conversation = await Conversation.findOne({
+      where: {
+        id: req.body.id
+      }
+    })
+    if (conversation.user1Id !== req.user.id && conversation.user2Id !== req.user.id) {
+      res.sendStatus(401)
+    }
+
     await Message.update({ isRead: true }, {
       where: {
         [Op.and]: {
@@ -63,7 +72,7 @@ router.put("/read", async (req, res, next) => {
         }
       }
     })
-    res.status(204).end();
+    res.sendStatus(204)
   } catch (error) {
     next(error);
   }

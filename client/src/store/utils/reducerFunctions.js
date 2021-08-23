@@ -85,8 +85,9 @@ export const setAllMessagesToRead = (state, conversation) => {
   return state.map((convo) => {
     const convoCopy = { ...convo }
     if (convoCopy.otherUser.id === conversation.otherUser.id) {
-      const messagesCopy = convoCopy.messages.map(message => ({ ...message, isRead: true }))
-      return { ...convoCopy, messages: messagesCopy, unreadCount: 0 }
+      convoCopy.messages = convoCopy.messages.map(message => ({ ...message, isRead: true }))
+      convoCopy.unreadCount = 0
+      return convoCopy
     } else {
       return convoCopy
     }
