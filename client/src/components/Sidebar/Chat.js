@@ -1,8 +1,9 @@
 import React from "react";
-import { Box } from "@material-ui/core";
+import { Box, Typography } from "@material-ui/core";
 import { BadgeAvatar, ChatContent } from "../Sidebar";
 import { makeStyles } from "@material-ui/core/styles";
 import { setActiveChat } from "../../store/activeConversation";
+import { readMessages } from "../../store/utils/thunkCreators";
 import { connect } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
@@ -16,6 +17,17 @@ const useStyles = makeStyles((theme) => ({
     "&:hover": {
       cursor: "grab"
     }
+  },
+  unreadCount: {
+    height: "20px",
+    padding: "0 2%",
+    borderRadius: "18px",
+    backgroundColor: theme.palette.primary.main,
+    fontSize: "13px",
+    fontWeight: "bold",
+    color: "#FFF",
+    textAlign: "center",
+    lineHeight: "20px"
   }
 }));
 
@@ -26,6 +38,7 @@ const Chat = (props) => {
 
   const handleClick = async (conversation) => {
     await props.setActiveChat(conversation.otherUser.username);
+    await props.readMessages(conversation);
   };
 
   return (
@@ -37,6 +50,10 @@ const Chat = (props) => {
         sidebar={true}
       />
       <ChatContent conversation={conversation} />
+      {!!conversation.unreadCount
+        &&
+        <Typography className={classes.unreadCount}>{conversation.unreadCount}</Typography>
+      }
     </Box>
   );
 };
@@ -45,6 +62,9 @@ const mapDispatchToProps = (dispatch) => {
   return {
     setActiveChat: (id) => {
       dispatch(setActiveChat(id));
+    },
+    readMessages: (conversation) => {
+      dispatch(readMessages(conversation));
     }
   };
 };
