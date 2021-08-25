@@ -11,8 +11,7 @@ const Message = db.define("message", {
     allowNull: false,
   },
   isRead: {
-    type: Sequelize.BOOLEAN,
-    allowNull: false,
+    type: Sequelize.ARRAY(Sequelize.BOOLEAN),
   }
 });
 
