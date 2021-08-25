@@ -10,13 +10,15 @@ const Conversation = db.define("conversation", {
   }
 });
 
-// find conversation given two user Ids
-
-Conversation.findConversation = async function (senderId, recipientId) {
+// find conversation given user Ids
+Conversation.findConversation = async function (senderId, recipientIds) {
   const conversation = await Conversation.findOne({
     where: {
       userIds: {
-        [Op.overlap]: [senderId, recipientId]
+        [Op.and]: {
+          [Op.contains]: [senderId, [...recipientIds]],
+          [Op.contained]: [senderId, [...recipientIds]],
+        }
       }
     }
   });
